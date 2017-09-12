@@ -24,7 +24,11 @@ runworkcomputer=1;
 numdates=100;              %number of high-ranking dates to save, of both T and WBT (default: 100)
 yeariwf=1981;yeariwl=2015;  %year range to compute over
 monthiwf=5;monthiwl=10;     %month range to compute over
+<<<<<<< HEAD
+maxnumstns=190;             %the number of stations in the newstnNumList from the latest version of mainstndata, ...
+=======
 maxnumstns=190;             %the number of stations in the newstnNumList from the latest temparrayholder, ...
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
                                 %MINUS the number of bad stations discovered hiding within it (from the list enumerated below)
                                 %this number of bad stations = size(numericstnsremovedfixed,2))
                                 %HAVE TO ENTER THIS NUMBER after running removebadstns and before running the rest of the script
@@ -33,7 +37,11 @@ missingdatavalwbt=40;       %value (deg C) beyond which WBT data is considered i
 monthlysstdataset='noaaersst';     %SST dataset to use: 'noaaersst' or 'esrlicoads' (both 2x2)
     justchangedsst=1;       %need to know to determine whether certain arrays must be recalculated
 
+<<<<<<< HEAD
+scriptdir='~/Library/Mobile Documents/com~apple~CloudDocs/General_Academics/Research/WBTT_Overlap_Paper/Saved_Arrays/';
+=======
 
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
 curDir='/Volumes/ExternalDriveA/WBTT_Overlap_Saved_Arrays/';
 tfileloc='/Volumes/MacFormatted4TBExternalDrive/NCDC_hourly_station_data_mat/temp';
 wbtfileloc='/Volumes/MacFormatted4TBExternalDrive/NCDC_hourly_station_data_mat/wbt';
@@ -153,7 +161,11 @@ v200andz200anoms=0; %analyze anoms of v200 and z200 (on the model of Teng & Bran
     
     
 if whethertoloadsavedarrays==1
+<<<<<<< HEAD
+    overviewarrays=load(strcat(curDir,'mainstndata.mat'));
+=======
     overviewarrays=load(strcat(curDir,'temparrayholder220aug31.mat'));
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
     helpfulmanualarraycreator;
     basicstuff=load(strcat(curArrayDir,'basicstuff'));
     lons=basicstuff.lons;lats=basicstuff.lats;
@@ -297,9 +309,13 @@ if removebadstnsanddefinefinaldatat==1
     end
     %Update newstnNumListnames because stationinfofromnumber did not know all the stations' info when ncdcHourlyTxtToMat2 was last run
     for i=1:size(newstnNumList,1);newstnNumListnames{i}=stationinfofromnumber(newstnNumList(i));end
+<<<<<<< HEAD
+    save(strcat(curDir,'mainstndata'),'newstnNumList','newstnNumListnames','newstnNumListlats',...
+=======
     save(strcat(curDir,'temparrayholder220aug31'),'newstnNumList','newstnNumListnames','newstnNumListlats',...
         'newstnNumListlons','finaldatat','finaldatadewpt','finaldatawbt','finaldataq','-append');
     save(strcat(curDir,'temparrayholder220aug31pristinearrays'),'newstnNumList','newstnNumListnames','newstnNumListlats',...
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         'newstnNumListlons','finaldatat','finaldatadewpt','finaldatawbt','finaldataq','-append');
     %After saving, move these to Polished Datasets folder
     if savetopolished==1
@@ -420,6 +436,21 @@ if compiledataarrays==1
     %A good way to find timing errors that are affecting the final extremes statistics is to plot(topXXtbystn{Z}(:,5)) for stn Z
     for twbtc=1:4
         if twbtc==1;stndata=stndatat;elseif twbtc==2;stndata=stndatawbt;elseif twbtc==3;stndata=stndatadewpt;elseif twbtc==4;stndata=stndataq;end
+<<<<<<< HEAD
+        %Eliminate all 1981 data for stations where it shows systematic
+        %problems (mostly timing errors and large gaps)
+        problemstns=[16;17;24;25;38;39;43;45;50;51;55;69;73;78;89;90;94;96;100;103;104;114;117;120;...
+            123;129;130;140;141;143;149;152;153;156;162;165;167;168;170;171;172;174;175;177;184;185;187;188;190];
+        for problemstn=1:size(problemstns,1)
+            for i=1:6;stndata{problemstns(problemstn),1,i}=NaN.*ones(monthlengthsdays(i)*24,1);end
+            finaldata{problemstns(problemstn),1}=NaN.*ones(4416,1);
+        end
+        %Other data that needs correction
+        stndata{16,24,6}(364:399)=NaN.*ones(36,1);stndata{16,24,6}(497:504)=NaN.*ones(8,1); %impossibly low WBTs at Key West in 2004
+        for i=1:6;years=[1;16;25];for year=1:3;stndata{16,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Key West's '96 & '05 T & WBT are too low by ~10 C
+        for i=1:6;for year=29:31;stndata{27,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Mobile AL's T for 2009-2011 repeat the same values
+        for i=1:6;years=[7;8;14];for year=1:3;stndata{45,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Long Beach AP CA for 87, 88, & 94
+=======
         stndata{2,5,6}(508:632)=NaN.*ones(125,1);stndata{2,8,6}(572:668)=NaN.*ones(97,1); %impossibly high q at Bettles AK in 1985 and 1988
         stndata{2,9,6}(328:380)=NaN.*ones(53,1);stndata{2,10,6}(366:494)=NaN.*ones(129,1); %impossibly high q at Bettles AK in 1989 and 1990
         for i=1:6;years=[1;8];for year=1:2;stndata{3,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Nome AK for 1981 & 88
@@ -437,34 +468,56 @@ if compiledataarrays==1
         for i=1:6;for year=29:31;stndata{27,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Mobile AL's T for 2009-2011 repeat the same values
         for i=1:6;years=[1];for year=1:1;stndata{43,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at San Diego CA for 1981
         for i=1:6;years=[1;7;8;14];for year=1:4;stndata{45,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Long Beach AP CA for 1981, 87, 88, & 94
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         stndata{48,3,4}(552:693)=NaN.*ones(142,1); %unreasonable spike in q at Cherry Point NC in Aug 1983
         stndata{48,12,4}(284)=NaN; %unreasonable spike in q for 1 hour at Cherry Point NC in Aug 1992
         stndata{48,12,5}(161)=NaN; %unreasonable spike in q for 1 hour at Cherry Point NC in Sep 1992
         stndata{48,19,5}(198)=NaN; %unreasonable spike in q for 1 hour at Cherry Point NC in Sep 1999
         for i=1:6;for year=25:35;stndata{48,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Cherry Point NC's T and q for 2005 onward repeat the same values
         stndata{49,3,4}(288)=NaN; %unreasonable spike in q at Columbia SC for 1 hour in Aug 1983
+<<<<<<< HEAD
+=======
         stndata{50,1,2}=NaN.*ones(720,1);stndata{50,1,3}=NaN.*ones(744,1); %timing errors at Athens GA for Jun & Jul 1981
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         for i=1:6;stndata{53,16,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %Asheville NC's T for 1996 are erroneously low
         for i=1:6;stndata{59,16,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %Memphis TN's T for 1996 are erroneously low
         for i=1:6;for year=29:30;stndata{63,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Las Vegas NV's T for 2009-2010 repeat the same values
         for i=1:6;stndata{64,14,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %Mercury NV's T for 1994 is unrealistically high
         for i=1:6;years=[3;5;8];for year=1:3;stndata{68,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Reagan National AP VA for 1983, 85, & 88
         for i=1:6;for year=29:32;stndata{89,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Concordia KS's T for 2009-2012 repeat the same values
+<<<<<<< HEAD
+=======
         for i=1:6;for year=1:1;stndata{90,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Alamosa CO for 1981
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         for i=1:6;years=[16;27];for year=1:2;stndata{90,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Alamosa CO's T for 1996 & 2007 are bad
         for i=1:6;years=[7];for year=1:1;stndata{91,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Pueblo CO for 1987
         for i=1:6;for year=29:32;stndata{92,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Reno NV's T for 2009-2012 repeat the same values
         for i=6:6;stndata{93,21,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %bad values for San Francisco CA in Oct 2001
         for i=1:6;stndata{93,30,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %San Francisco CA's T for 2010 repeat the same values
+<<<<<<< HEAD
+        for i=4:5;years=[3];for year=1:1;stndata{96,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Islip NY for Aug & Sep 1983
+        for i=1:6;for year=3:3;stndata{103,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Pittsburgh PA for 1983
+=======
         for i=1:6;years=[1];for year=1:1;stndata{94,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Newark NJ for 1981
         for i=4:5;years=[3];for year=1:1;stndata{96,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Islip NY for Aug & Sep 1983
         for i=1:6;for year=3:3;stndata{103,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Pittsburgh PA for 1983
         for i=1:6;for year=1:1;stndata{104,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Akron OH for 1981
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         for i=1:6;for year=29:31;stndata{124,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Norfolk NE's T for 2009-2011 repeat the same values
         for i=1:6;for year=26:35;stndata{132,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Lander WY's T for 2006 onward repeat the same values
         for i=1:6;stndata{134,25,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %Winnemucca NV's T for 2005 repeats the same values
         for i=1:6;for year=6:8;stndata{135,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Red Bluff CA's T and WBT for 1986-88 are erroneously low
         for i=1:6;for year=29:32;stndata{141,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Muskegon MI's T for 2009-2012 repeat the same values
+<<<<<<< HEAD
+        for i=1:6;years=[5];for year=1:1;stndata{143,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Houghton Lake MI for 1985
+        for i=1:6;for year=29:30;stndata{158,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Salem OR's T for 2009-2010 repeat the same values
+        for i=1:6;for year=29:32;stndata{160,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Sault Ste Marie MI's T for 2009-2012 repeat the same values
+        for i=1:6;for year=29:32;stndata{161,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Duluth MN's T for 2009-2012 repeat the same values
+        for i=1:6;stndata{169,30,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %Havre MT's T for 2010 are erroneously low
+        for i=1:6;for year=25:35;stndata{170,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Kalispell MT's T for 2005 onward are erroneously low
+        for i=1:6;stndata{174,32,i}=NaN.*ones(monthlengthsdays(i)*24,1);end %Astoria OR's T for 2012 repeats the same values
+        for i=1:6;for year=23:35;stndata{178,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Brunswick ME's T for 2003 onward repeat the same values
+=======
         for i=1:6;years=[1;5];for year=1:2;stndata{143,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Houghton Lake MI for 1981 & 85
         for i=1:6;for year=1:1;stndata{149,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Sioux Falls SD for 1981
         for i=1:6;for year=1:1;stndata{152,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Aberdeen SD for 1981
@@ -480,6 +533,7 @@ if compiledataarrays==1
         for i=1:6;for year=23:35;stndata{178,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %Brunswick ME's T for 2003 onward repeat the same values
         for i=1:6;for year=1:1;stndata{184,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Abilene TX for 1981
         for i=1:6;for year=1:1;stndata{187,year,i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Oklahoma City OK for 1981
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         for i=1:6;years=[5;7;10];for year=1:3;stndata{188,years(year),i}=NaN.*ones(monthlengthsdays(i)*24,1);end;end %timing errors at Fort Smith AR for 1985, 87, 90
         if twbtc==1;stndatat=stndata;elseif twbtc==2;stndatawbt=stndata;elseif twbtc==3;stndatadewpt=stndata;elseif twbtc==4;stndataq=stndata;end
     end
@@ -489,6 +543,12 @@ if compiledataarrays==1
     %Fix stndata arrays that have the missing data in the wrong place (i.e. usually at the beginning when it should be at the end)
     %Each correction made here has been carefully verified by plotting stndatat and finaldatat (with problems identified from topXXdatat), 
         %and comparing all these against Climod records
+<<<<<<< HEAD
+    
+    %Save the arrays into a .mat file
+    save(strcat(curDir,'mainstndata'),'stndatat','stndatawbt','stndatadewpt','stndataq','finaldatat','finaldatawbt',...
+        'finaldatadewpt','finaldataq','-append');
+=======
     %Unless otherwise noted, these also all are related to problems with 1981 data
     %for twbtc=1:4
     %    if twbtc==1;stndata=stndatat;elseif twbtc==2;stndata=stndatawbt;elseif twbtc==3;stndata=stndatadewpt;elseif twbtc==4;stndata=stndataq;end
@@ -501,6 +561,7 @@ if compiledataarrays==1
     
     %Save the arrays into a .mat file
     save(strcat(curDir,'stndatatandwbt'),'stndatat','stndatawbt','stndatadewpt','stndataq');
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
     disp(clock);
 end
 
@@ -1201,7 +1262,11 @@ if topXXhourdistn==1
             finaldatawbt{year,stn}=calcwbtfromTandshum(finaldatat{year,stn},finaldataq{year,stn}/1000,1);
         end
     end
+<<<<<<< HEAD
+    save(strcat(curDir,'mainstndata'),'newstnNumList','newstnNumListnames','newstnNumListlats',...
+=======
     save(strcat(curDir,'temparrayholder220aug31'),'newstnNumList','newstnNumListnames','newstnNumListlats',...
+>>>>>>> f279ed2f16825e25c9fe678e9eb8191bb3a74bfd
         'newstnNumListlons','finaldatat','finaldatadewpt','finaldatawbt','finaldataq','-append');
     %NOW, HAVE TO RERUN COMPILEDATAARRAYS & CREATEMAXTWBTARRAYS
 end
