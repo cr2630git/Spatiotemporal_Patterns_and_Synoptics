@@ -6,11 +6,11 @@
 runremote=0;
 
 if runremote==0
-    arraydirextdrive='/Volumes/ExternalDriveA/WBTT_Overlap_Saved_Arrays/';
+    arraydirextdrive='/Volumes/ExternalDriveB/WBTT_Overlap_Saved_Arrays/';
 else
     arraydirextdrive='/cr/cr2630/WBTT_Overlap_Paper/Saved_Arrays/';
 end
-masterfile=load(strcat(arraydirextdrive,'temparrayholder220aug31'));
+masterfile=load(strcat(arraydirextdrive,'mainstndata'));
 newstnNumList=masterfile.newstnNumList;
 newstnNumListlats=masterfile.newstnNumListlats;
 newstnNumListlons=masterfile.newstnNumListlons;
@@ -19,9 +19,14 @@ finaldatat=masterfile.finaldatat;
 finaldatadewpt=masterfile.finaldatadewpt;
 finaldatawbt=masterfile.finaldatawbt;
 finaldataq=masterfile.finaldataq;
-gosavethisstn=masterfile.gosavethisstn;
-goodstnyearcombo=masterfile.goodstnyearcombo;
+stndatat=masterfile.stndatat;
+stndatawbt=masterfile.stndatawbt;
+stndataq=masterfile.stndataq;
+stndatadewpt=masterfile.stndatadewpt;
+%gosavethisstn=masterfile.gosavethisstn;
+%goodstnyearcombo=masterfile.goodstnyearcombo;
 helpfulmanualarraycreator;
+
 basicstuff=load(strcat(arraydirextdrive,'basicstuff'));
 lons=basicstuff.lons;lats=basicstuff.lats;
 narrlsmask=basicstuff.narrlsmask;
@@ -32,11 +37,6 @@ tzlist=basicstuff.tzlist;
 ncaregionnamemaster=basicstuff.ncaregionnamemaster;
 monthlengthsdays=basicstuff.monthlengthsdays;
 
-otherfile=load(strcat(arraydirextdrive,'stndatatandwbt'));
-stndatat=otherfile.stndatat;
-stndatawbt=otherfile.stndatawbt;
-stndataq=otherfile.stndataq;
-stndatadewpt=otherfile.stndatadewpt;
 topXXfile=load(strcat(arraydirextdrive,'topXXarrays'));
 topXXtbystn=topXXfile.topXXtbystn;
 topXXwbtbystn=topXXfile.topXXwbtbystn;
@@ -46,6 +46,8 @@ top1000wbtbystn=topXXfile.top1000wbtbystn;
 top1000qbystn=topXXfile.top1000qbystn;
 mediantopxxwbtbystn=topXXfile.mediantopxxwbtbystn;
 mediantopxxwbtbynarr=topXXfile.mediantopxxwbtbynarr;
+mediantopxxtbystn=topXXfile.mediantopxxtbystn;
+
 essentialarraysfile=load(strcat(arraydirextdrive,'essentialarrays'));
 wbttscore=essentialarraysfile.wbttscore;
 pctoverlapwbtt=essentialarraysfile.pctoverlapwbtt;

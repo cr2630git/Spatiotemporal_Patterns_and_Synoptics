@@ -9,8 +9,8 @@
 %Maps were originally made with usaminushawaii-tight region, but then were re-created with usa region (eliminating AK)
     
 runremotely=0;
-runworkcomputer=1;
-connectedtoexternaldrive=0; %whether can currently access data stored on 4TB external drive
+connectedtoexternaldrivea=0; %whether can currently access data stored on ExternalDriveA
+connectedtoexternaldriveb=0; %ditto for External Drive B
 takenoverbymasterscript=0; %whether this script is actually controlled by a master one
     %(useful for e.g. running this script twice, changing an option or two, when making a multipanel figure)
 
@@ -18,19 +18,20 @@ if takenoverbymasterscript==0
     yeariwf=1981;yeariwl=2015; %defaults
     monthiwf=5;monthiwl=10;
 
-    loadvariables=0; %30 sec
+    loadvariables=0; %5 min; often it's better to load individual sections from loadsavedvariables, as needed
     validstnmap=0;
     histogramrejstns=0;
     linechartrejstns=0;
     showregions=0;
-    scatterplottqconstantwbtlines=1; %scatterplot helping to explore the data as well as illustrate 'essential constraints' on T vs q excursions
+    scatterplottqconstantwbtlines=0; %10 sec; scatterplot helping to explore the data as well as illustrate 'essential constraints' on T vs q excursions
         if scatterplottqconstantwbtlines==1
-            stntouse=94; %typical options are 94 (Newark NJ), 187 (OK City OK), 93 (San Francisco CA)
+            stntouse=119; %doesn't apply to final fig (edit that in edascatterplot);
+                %typical options are 94 (Newark NJ), 187 (OK City OK), 93 (San Francisco CA) -- others are 119 (Des Moines IA)
             recomputeperct=0; %30 sec; the main calculation in this loop
-            doplot=0; %whether to actually make the scatterplot, or just do the preliminary computation (i.e. if only looking at centroids)
+            doplot=1; %whether to actually make the scatterplot, or just do the preliminary computation (i.e. if only looking at centroids)
             docentroidplot=0; %whether to map centroid positions for each stn
             scatterplotvectorslope=0; %some verification plots requested by Radley, using the vector information from the above scatterplot
-            makefinalfig=1; %selects the best of the above figures to put into a 4-panel figure for inclusion in the paper
+            makefinalfig=0; %selects the best of the above figures to put into a 4-panel figure for inclusion in the paper
         end
     threelinesofxstwbtq=0; %timeline showing when each hot day ranked by T, WBT, and q occurred, for selected stations
         %(to get a feel for how much overlap there is between them, and the amount of temporal clustering in general)
@@ -45,7 +46,7 @@ if takenoverbymasterscript==0
         prec=0.01; %precision to which to round colorbar text
     histogramtwbtscores=0;
     maptqtermsdiff=0;
-    mapmediantopxxwbtbystn=0;
+    mapmediantopxxwbtbystn=0; %to create final figure, set plotnarr=1 and twopanels=0
         if mapmediantopxxwbtbystn==1
             plotnarr=1;
             twopanels=0; %0 if NARR & stn data in the same panel, 1 if not
@@ -63,7 +64,7 @@ if takenoverbymasterscript==0
         plotappendix=1;
     mapnumberofevents=0;
     mapnumberofyears=0;
-    maptwbtqdates=0;
+    maptwbtqdates=1;
         if maptwbtqdates==1
             variwfhere=2;variwlhere=2;
             makefinal=1;
@@ -252,6 +253,7 @@ if takenoverbymasterscript==0
     newstnNumListnamesclean{44}='Los Angeles, CA';
     newstnNumListnamesclean{93}='San Francisco, CA';
     newstnNumListnamesclean{94}='Newark, NJ';
+    newstnNumListnamesclean{119}='Des Moines, IA';
     newstnNumListnamesclean{121}='Omaha, NE';
     newstnNumListnamesclean{176}='Seattle, WA';
     newstnNumListnamesclean{179}='Queens (JFK), NY';
@@ -264,6 +266,7 @@ if takenoverbymasterscript==0
     else %personal or work computer
         curDir='~/Library/Mobile Documents/com~apple~CloudDocs/General_Academics/Research/WBTT_Overlap_Paper/';
         curArrayDir='~/Library/Mobile Documents/com~apple~CloudDocs/General_Academics/Research/WBTT_Overlap_Paper/Saved_Arrays/';
+        saveDir='/Volumes/ExternalDriveB/WBTT_Overlap_Saved_Arrays/';
         figDir='~/Library/Mobile Documents/com~apple~CloudDocs/General_Academics/Research/WBTT_Overlap_Paper/Figures/';
         narrDir='/Volumes/ExternalDriveA/NARR_3-hourly_data_mat/';
         ncepdailydataDir='/Volumes/ExternalDriveA/NCEP_daily_data_mat/';
@@ -276,7 +279,7 @@ if takenoverbymasterscript==0
     temp=load('-mat','soilm_narr_01_01');soilm_narr_01_01=temp(1).soilm_0000_01_01;
     narrlats=soilm_narr_01_01{1};narrlons=soilm_narr_01_01{2};
     exist ersstlats;
-    if ans==0 && connectedtoexternaldrive==1
+    if ans==0 && connectedtoexternaldrivea==1
         ersstlatsorig=ncread('/Volumes/ExternalDriveA/NOAA_ERSST_Data/sst.mnmean.nc','lat');
         ersstlonsorig=ncread('/Volumes/ExternalDriveA/NOAA_ERSST_Data/sst.mnmean.nc','lon');
         for i=1:size(ersstlonsorig,1)
@@ -288,7 +291,7 @@ if takenoverbymasterscript==0
         save(strcat(curArrayDir,'correlsstarrays'),'ersstlats','ersstlons','-append');
     end
     exist oisstlats;
-    if ans==0 && connectedtoexternaldrive==1
+    if ans==0 && connectedtoexternaldrivea==1
         oisstlatsorig=...
             ncread('/Volumes/ExternalDriveA/NOAA_OISST_Daily_Data/tos_OISST_L4_AVHRR-only-v2_19820101-19820630.nc','lat');
         oisstlonsorig=...
@@ -473,17 +476,17 @@ if scatterplottqconstantwbtlines==1
     xi34=interp1(wbt34curveq,wbt34curvet,yi34,'spline');
     
     if recomputeperct==1
-        for stntouse=1:190
-            assoct=correspt{stntouse}; %T associated with top-100 extreme WBT values
-            assocq=correspq{stntouse}; %q associated with top-100 extreme WBT values
+        for stn=1:190
+            assoct=correspt{stn}; %T associated with top-100 extreme WBT values
+            assocq=correspq{stn}; %q associated with top-100 extreme WBT values
 
             %Also include all MJJASO hours OR next 900 (after the 1st top 100) --
             %see actual plotting of scatterplot, below, to toggle between
             alltdatavec=0;allqdatavec=0;
             for year=1:35
                 for month=1:6
-                    tdata=stndatat{stntouse,year,month};%numvalstoadd=size(tdata,1);
-                    qdata=stndataq{stntouse,year,month};
+                    tdata=stndatat{stn,year,month};%numvalstoadd=size(tdata,1);
+                    qdata=stndataq{stn,year,month};
                     alltdatavec=[alltdatavec;tdata];
                     allqdatavec=[allqdatavec;qdata];
                 end
@@ -492,18 +495,21 @@ if scatterplottqconstantwbtlines==1
             %Compute centroid of top-100 T and q, and of next-900 T and q
             centroidtop100t=nanmean(assoct(1:100));
             centroidtop100q=nanmean(assocq(1:100));
-            centroidnext900t=nanmean(corresptnext900{stntouse}(101:1000));
-            centroidnext900q=nanmean(correspqnext900{stntouse}(101:1000));
+            centroidnext900t=nanmean(corresptnext900{stn}(101:1000));
+            centroidnext900q=nanmean(correspqnext900{stn}(101:1000));
             xdisplacement=centroidtop100t-centroidnext900t;ydisplacement=centroidtop100q-centroidnext900q;
-            perct(stntouse)=atan(ydisplacement/xdisplacement)*180/3.1416; %e.g. 45 deg if displacements are equal
+            perct(stn)=atan(ydisplacement/xdisplacement)*180/3.1416; %e.g. 45 deg if displacements are equal
         end
-        save(strcat(curArrayDir,'extraarrays'),'perct','-append');
+        save(strcat(saveDir,'extraarrays'),'perct','-append');
     end
     
     
     %Finally, make the plot
     if doplot==1
         figure(figc);clf;figc=figc+1;curpart=1;highqualityfiguresetup;
+        
+        assoct=correspt{stntouse}; %T associated with top-100 extreme WBT values
+        assocq=correspq{stntouse}; %q associated with top-100 extreme WBT values
         
         plot([xi18(end) xi18(1)],[yi18(end) yi18(1)],'color',colors('gray'),'linewidth',3);hold on;
         plot([xi20(end) xi20(1)],[yi20(end) yi20(1)],'color',colors('purple'),'linewidth',3);
@@ -960,24 +966,26 @@ end
 %Include NCA regions as shaded in pastel colors
 if mapmediantopxxwbtbystn==1
     if makefinal==1
-        %if var==1;figc=figc+1;end
         dontclear=1;figure(figc);if twopanels==1;subplot(2,1,1);end
     else
         figc=figc+1;curpart=1;highqualityfiguresetup;
     end
     if twopanels==1;plotBlankMap(figc,'usa');hold on;curpart=1;highqualityfiguresetup;end
     mycolormap=colormaps('t','fewereven','not');colormap(flipud(mycolormap)); %6 colors
+    
+    thingbeingplotted=mediantopxxtbystn;units='';prec=1;
+    
     if twopanels==1 %if twopanels=0, this will be plotted a little later on, after the NARR stuff
         for i=16:size(newstnNumList,1)
-            if mediantopxxwbtbystn(i)>=quantile(mediantopxxwbtbystn(16:190),0.9)
+            if thingbeingplotted(i)>=quantile(thingbeingplotted(16:190),0.9)
                 color=mycolormap(6,:);
-            elseif mediantopxxwbtbystn(i)>=quantile(mediantopxxwbtbystn(16:190),0.75)
+            elseif thingbeingplotted(i)>=quantile(thingbeingplotted(16:190),0.75)
                 color=mycolormap(5,:);
-            elseif mediantopxxwbtbystn(i)>=quantile(mediantopxxwbtbystn(16:190),0.5)
+            elseif thingbeingplotted(i)>=quantile(thingbeingplotted(16:190),0.5)
                 color=mycolormap(4,:);
-            elseif mediantopxxwbtbystn(i)>=quantile(mediantopxxwbtbystn(16:190),0.25)
+            elseif thingbeingplotted(i)>=quantile(thingbeingplotted(16:190),0.25)
                 color=mycolormap(3,:);
-            elseif mediantopxxwbtbystn(i)>=quantile(mediantopxxwbtbystn(16:190),0.1)
+            elseif thingbeingplotted(i)>=quantile(thingbeingplotted(16:190),0.1)
                 color=mycolormap(2,:);
             else
                 color=mycolormap(1,:);
@@ -986,7 +994,7 @@ if mapmediantopxxwbtbystn==1
                 'MarkerFaceColor',color,'MarkerEdgeColor',color,'MarkerSize',7);hold on;
         end
     end
-    thingbeingplotted=mediantopxxwbtbystn;units='';prec=1;
+    
     
     if makefinal==1
         if twopanels==1
@@ -997,9 +1005,10 @@ if mapmediantopxxwbtbystn==1
         set(gca,'Position',cpos);clear colorbarc;clear titlec;edamultipurposelegendcreator;
     else
         curpart=2;figloc=figDir;figname='medianvaltopxxwbt';
-        highqualityfiguresetup;titlec=18;
+        titlec=18;
         colorbarc=2.75;colorbarlabel='Value (deg C)';inclcblabel=1;
         edamultipurposelegendcreator;
+        highqualityfiguresetup;
     end
     
     
@@ -1010,7 +1019,7 @@ if mapmediantopxxwbtbystn==1
                 mediantopxxwbtbynarr(i,j)=topXXdatawbtnarr(i,j,50,1);
             end
         end
-        if twopanels==1;transparency=1;subplot(2,1,2);else transparency=0.5;end
+        if twopanels==1;transparency=1;subplot(2,1,2);else transparency=0.75;end
         temp=mediantopxxwbtbynarr==0;mediantopxxwbtbynarr(temp)=NaN;
         cbmin=18;cbmax=30;mystep=2;
         regionformap='usa';datatype='NARR';
@@ -1221,6 +1230,124 @@ if maptqstananomsduringextremewbt==1
             figname=strcat('maptqstananomsoption',num2str(var));
         end
         highqualityfiguresetup;
+        
+        %Uncertainty analysis on the ratio -- as requested by Reviewer #1
+        %Methodology: combine every one of the 100 pts in corresptanomstan
+            %with every one of the 100 pts in correspqanomstan
+        %Use the 25th & 75th percentiles (e.g.) of this distribution of
+            %ratios to characterize
+        if var==4
+            for stn=16:190
+                c=1;
+                for i=1:100
+                    thist=corresptanomstan{stn}(i);
+                    for j=1:100
+                        thisq=correspqanomstan{stn}(j);
+                        thisratio(c)=thist/thisq;c=c+1;
+                    end
+                end
+                ratiosp25(stn)=quantile(thisratio,0.25);
+                ratiosp50(stn)=quantile(thisratio,0.5);
+                ratiosp75(stn)=quantile(thisratio,0.75);
+            end
+            
+            figure(10);dontclear=1;
+            curpart=1;width=8;highqualityfiguresetup;vartoplot='t';
+            moreorfewercolors='fewereven';
+            
+            subplot(3,1,1);thingtoplot=ratiosp25;
+            bp1=round2(quantile(thingtoplot,0.9),0.01); %breakpoint 1
+            bp2=round2(quantile(thingtoplot,0.75),0.01);
+            bp3=round2(quantile(thingtoplot,0.5),0.01);
+            bp4=round2(quantile(thingtoplot,0.25),0.01);
+            bp5=round2(quantile(thingtoplot,0.1),0.01);
+            plotBlankMap(figc,'usa');figc=figc+1;
+            
+            %Set up colors to use
+            curax=gca;
+            for i=1:175
+                if thingtoplot(i)>=bp1
+                    color=mycolormap(6,:);
+                elseif thingtoplot(i)>=bp2
+                    color=mycolormap(5,:);
+                elseif thingtoplot(i)>=bp3
+                    color=mycolormap(4,:);
+                elseif thingtoplot(i)>=bp4
+                    color=mycolormap(3,:);
+                elseif thingtoplot(i)>=bp5
+                    color=mycolormap(2,:);
+                else
+                    color=mycolormap(1,:);
+                end
+                h=geoshow(newstnNumListlats(i+15),newstnNumListlons(i+15),'DisplayType','Point','Marker','s',...
+                    'MarkerFaceColor',color,'MarkerEdgeColor',color,'MarkerSize',7);hold on;
+            end
+            
+            
+            subplot(3,1,2);thingtoplot=ratiosp50;
+            bp1=round2(quantile(thingtoplot,0.9),0.01); %breakpoint 1
+            bp2=round2(quantile(thingtoplot,0.75),0.01);
+            bp3=round2(quantile(thingtoplot,0.5),0.01);
+            bp4=round2(quantile(thingtoplot,0.25),0.01);
+            bp5=round2(quantile(thingtoplot,0.1),0.01);
+            plotBlankMap(figc,'usa');figc=figc+1;
+            
+            %Set up colors to use
+            curax=gca;
+            for i=1:175
+                if thingtoplot(i)>=bp1
+                    color=mycolormap(6,:);
+                elseif thingtoplot(i)>=bp2
+                    color=mycolormap(5,:);
+                elseif thingtoplot(i)>=bp3
+                    color=mycolormap(4,:);
+                elseif thingtoplot(i)>=bp4
+                    color=mycolormap(3,:);
+                elseif thingtoplot(i)>=bp5
+                    color=mycolormap(2,:);
+                else
+                    color=mycolormap(1,:);
+                end
+                h=geoshow(newstnNumListlats(i+15),newstnNumListlons(i+15),'DisplayType','Point','Marker','s',...
+                    'MarkerFaceColor',color,'MarkerEdgeColor',color,'MarkerSize',7);hold on;
+            end
+            
+            
+            subplot(3,1,3);thingtoplot=ratiosp75;
+            bp1=round2(quantile(thingtoplot,0.9),0.01); %breakpoint 1
+            bp2=round2(quantile(thingtoplot,0.75),0.01);
+            bp3=round2(quantile(thingtoplot,0.5),0.01);
+            bp4=round2(quantile(thingtoplot,0.25),0.01);
+            bp5=round2(quantile(thingtoplot,0.1),0.01);
+            plotBlankMap(figc,'usa');figc=figc+1;
+            
+            %Set up colors to use
+            curax=gca;
+            for i=1:175
+                if thingtoplot(i)>=bp1
+                    color=mycolormap(6,:);
+                elseif thingtoplot(i)>=bp2
+                    color=mycolormap(5,:);
+                elseif thingtoplot(i)>=bp3
+                    color=mycolormap(4,:);
+                elseif thingtoplot(i)>=bp4
+                    color=mycolormap(3,:);
+                elseif thingtoplot(i)>=bp5
+                    color=mycolormap(2,:);
+                else
+                    color=mycolormap(1,:);
+                end
+                h=geoshow(newstnNumListlats(i+15),newstnNumListlons(i+15),'DisplayType','Point','Marker','s',...
+                    'MarkerFaceColor',color,'MarkerEdgeColor',color,'MarkerSize',7);hold on;
+            end
+
+            thingbeingplotted=thingtoplot;units='';
+            colorbarc=2.5;
+            edamultipurposelegendcreator;
+
+            curpart=2;figloc=figDir;figname='uncertmsaratio';
+            highqualityfiguresetup;
+        end
     end
 end
 
@@ -1481,7 +1608,7 @@ if maptwbtqdates==1
         else
             figc=figc+1;curpart=1;highqualityfiguresetup;
         end
-        plotBlankMap(figc,'usa');hold on;
+        plotBlankMap(figc,'usa',0,'ghost white');hold on;
         if makefinal==1
             if var==variwlhere;curpart=1;highqualityfiguresetup;end
         else
@@ -1535,6 +1662,7 @@ if maptwbtqdates==1
 
         %Analogously, plot the same metric for the NARR heat waves
         %Either two panels or one, controlled by the variable twopanels
+        transparency=0.5; %transparency of underlying shading in both panels
         if plotnarr==1
             cbmin=170;cbmax=250;mystep=10;
             regionformap='usa';datatype='NARR';
@@ -1542,7 +1670,7 @@ if maptwbtqdates==1
             vararginnew={'variable';'generic scalar';'underlayvariable';'generic scalar';
                 'contour';1;'mystepunderlay';mystep;'plotCountries';1;...
                 'underlaycaxismin';cbmin;'underlaycaxismax';cbmax;'overlaynow';0;'anomavg';'avg';...
-                'transparency';0.15;'nonewfig';1};
+                'transparency';transparency;'nonewfig';1};
             if twopanels==1
                 if makefinal==1;vararginnew{size(vararginnew,1)+1}='nonewfig';vararginnew{size(vararginnew,1)+1}=1;subplot(2,1,2);end
                 width=9;
@@ -1606,7 +1734,7 @@ if maptwbtqdates==1
             vararginnew={'variable';'generic scalar';'underlayvariable';'generic scalar';
                 'contour';1;'mystepunderlay';mystep;'plotCountries';1;...
                 'underlaycaxismin';cbmin;'underlaycaxismax';cbmax;'overlaynow';0;'anomavg';'avg';...
-                'transparency';0.15;'nonewfig';1};
+                'transparency';transparency;'nonewfig';1};
             plotModelData(data,regionformap,vararginnew,datatype);
             curpart=1;highqualityfiguresetup;
             mycolormap=[colors('gray');colors('brown');colors('purple');colors('blue');...
