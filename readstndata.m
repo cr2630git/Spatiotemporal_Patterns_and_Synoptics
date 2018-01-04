@@ -28,7 +28,7 @@ dorankingqc=0;              %1 sec
 calcoverlapscore=0;
 mapstns=0;                  %1 min
 mapresults=0;
-    regiontouse='usaminushawaii-tight'; %default is 'usaminushawaii-tight'
+    regiontouse='usa'; %default is 'usa'
 
 %Other key settings
 startyear=1981;stopyear=2015;   %default is 1981-2015
@@ -40,8 +40,8 @@ numdaystolookfor=30; %number for calculating T/WBT overlap scores
 %Start things up
 disp('Hello and welcome to my beautiful script');
 if strcmp(runlocation,'local')==1
-    scriptlocation='/Users/colin/Documents/General_Academics/Research/WBTT_Overlap_Paper/';
-    textfilelocation='/Users/colin/Documents/General_Academics/Research/WBTT_Overlap_Paper/';
+    scriptlocation='~/Library/Mobile Documents/com~apple~CloudDocs/General_Academics/Research/WBTT_Overlap_Paper/';
+    textfilelocation='~/Library/Mobile Documents/com~apple~CloudDocs/General_Academics/Research/WBTT_Overlap_Paper/';
     datalocation='/Volumes/MacFormatted4TBExternalDrive/NCDC_hourly_station_data_active/';
 elseif strcmp(runlocation,'remotesonny')==1
     scriptlocation='/cr/cr2630/';
@@ -72,8 +72,8 @@ end
 if unzipandelimstnswithmissingdata==1
     disp(clock);
     validstnlist=zeros(stnstop-stnstart+1,1);
-    %stnlisttouse=neweststnlist;
-    stnlisttouse=723400;
+    stnlisttouse=neweststnlist;
+    %stnlisttouse=723400;
     if stnstop>size(stnlisttouse,1);stnstop=size(stnlisttouse,1);end
     for stn=stnstart:stnstop
         curstnnum=num2str(stnlisttouse(stn));
